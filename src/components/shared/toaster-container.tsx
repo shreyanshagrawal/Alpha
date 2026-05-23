@@ -6,6 +6,7 @@ import { X, CheckCircle2, AlertCircle, Sparkles } from "lucide-react";
 import { useEffect } from "react";
 
 function ToastItem({ toast }: { toast: Toast }) {
+
   const removeToast = useToastStore((state) => state.removeToast);
 
   useEffect(() => {

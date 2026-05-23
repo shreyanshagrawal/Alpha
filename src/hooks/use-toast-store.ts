@@ -23,6 +23,8 @@ export const useToastStore = create<ToastStore>((set) => ({
   toasts: [],
   notifications: [],
   unreadCount: 0,
+
+
   addToast: (toast) => {
     const id = Math.random().toString(36).substring(2, 9);
     const duration = toast.duration ?? 4000;
@@ -34,6 +36,8 @@ export const useToastStore = create<ToastStore>((set) => ({
       unreadCount: state.unreadCount + 1,
     }));
   },
+
+
   removeToast: (id) =>
     set((state) => ({
       toasts: state.toasts.filter((t) => t.id !== id),
