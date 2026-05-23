@@ -1,6 +1,9 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 import Loading from "@/components/shared/loading";
 import { useProduct } from "@/features/products/hooks/use-product";
 import ProductCarousel from "./product-carousel";
@@ -12,6 +15,7 @@ interface Props {
 export default function ProductDetailClient({
   id,
 }: Props) {
+  const router = useRouter();
   const {
     data: product,
     isLoading,
@@ -34,6 +38,15 @@ export default function ProductDetailClient({
     <div className="space-y-8">
       {/* Header */}
       <div>
+        <Button 
+          variant="ghost" 
+          onClick={() => router.back()} 
+          className="mb-4 -ml-2 gap-2 text-muted-foreground hover:text-foreground hover:bg-transparent"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Products
+        </Button>
+
         <h1 className="text-4xl font-bold">
           {product.title}
         </h1>
