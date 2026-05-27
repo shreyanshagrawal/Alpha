@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 export default function LoginPage() {
   const { login, role, isLoading } = useAuth();
   const router = useRouter();
-  const [selectedRole, setSelectedRole] = useState<Role>("admin");
+  const [selectedRole, setSelectedRole] = useState<"admin" | "user">("admin");
 
   useEffect(() => {
     if (!isLoading && role) {
