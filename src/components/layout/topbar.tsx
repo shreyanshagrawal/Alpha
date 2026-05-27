@@ -30,13 +30,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { useAuth } from "@/context/auth-context";
+
 export default function Topbar() {
   const notifications = useToastStore((state) => state.notifications);
   const unreadCount = useToastStore((state) => state.unreadCount);
   const clearNotifications = useToastStore((state) => state.clearNotifications);
   const markAllAsRead = useToastStore((state) => state.markAllAsRead);
+  const { logout, role } = useAuth();
 
   const formatTimeAgo = (timestamp: number) => {
+    // eslint-disable-next-line react-hooks/purity
     const diff = Math.floor((Date.now() - timestamp) / 1000);
     if (diff < 60) return "Just now";
     if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
@@ -49,7 +53,7 @@ export default function Topbar() {
       <div className="md:hidden">
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" aria-label="Toggle navigation menu">
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
@@ -86,7 +90,7 @@ export default function Topbar() {
         {/* Notifications */}
         <DropdownMenu onOpenChange={(open) => { if (open) markAllAsRead(); }}>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative">
+            <Button variant="ghost" size="icon" className="relative" aria-label="View notifications">
               <Bell className="h-5 w-5" />
               {unreadCount > 0 && (
                 <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-destructive animate-pulse"></span>
@@ -134,7 +138,7 @@ export default function Topbar() {
         {/* User Profile */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-8 w-8 rounded-full border border-border/50 shadow-sm">
+            <Button variant="ghost" className="relative h-8 w-8 rounded-full border border-border/50 shadow-sm" aria-label="User profile menu">
               <Avatar className="h-8 w-8">
                 <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">SA</AvatarFallback>
               </Avatar>
@@ -143,9 +147,9 @@ export default function Topbar() {
           <DropdownMenuContent className="w-56 rounded-xl shadow-lg border p-1.5" align="end" forceMount>
             <DropdownMenuLabel className="font-normal p-2">
               <div className="flex flex-col space-y-1.5">
-                <p className="text-sm font-bold leading-none">Shreyansh</p>
+                <p className="text-sm font-bold leading-none capitalize">{role || "User"}</p>
                 <p className="text-xs leading-none text-muted-foreground">
-                  admin@hubx.com
+                  {role === "admin" ? "admin@hubx.com" : "user@hubx.com"}
                 </p>
               </div>
             </DropdownMenuLabel>
@@ -160,7 +164,7 @@ export default function Topbar() {
               Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator className="my-1" />
-            <DropdownMenuItem className="text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer rounded-lg px-2.5 py-2 font-medium">
+            <DropdownMenuItem onClick={logout} className="text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer rounded-lg px-2.5 py-2 font-medium">
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>

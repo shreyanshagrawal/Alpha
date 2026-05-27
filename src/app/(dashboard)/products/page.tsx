@@ -23,8 +23,10 @@ function ProductsPageContent() {
     ratingParam,
     categories,
     sorting,
+    pagination,
     filteredProducts,
     handleSortingChange,
+    handlePaginationChange,
     handleSearchChange,
     handleCategoryChange,
     handleRatingChange,
@@ -78,6 +80,8 @@ function ProductsPageContent() {
             data={filteredProducts}
             sorting={sorting}
             setSorting={handleSortingChange}
+            pagination={pagination}
+            setPagination={handlePaginationChange}
           />
         </div>
       </div>

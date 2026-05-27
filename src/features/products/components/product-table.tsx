@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 
 import {
   flexRender,
@@ -8,6 +8,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   SortingState,
+  PaginationState,
   useReactTable,
   VisibilityState,
   OnChangeFn,
@@ -50,16 +51,18 @@ import {
 
 interface Props {
   data: Product[];
-
   sorting: SortingState;
-
   setSorting: OnChangeFn<SortingState>;
+  pagination: PaginationState;
+  setPagination: OnChangeFn<PaginationState>;
 }
 
-export default function ProductTable({
+function ProductTable({
   data,
   sorting,
   setSorting,
+  pagination,
+  setPagination,
 }: Props) {
   const router = useRouter();
 
@@ -73,11 +76,13 @@ export default function ProductTable({
 
     state: {
       sorting,
+      pagination,
       columnVisibility,
       columnOrder,
     },
 
     onSortingChange: setSorting,
+    onPaginationChange: setPagination,
     onColumnVisibilityChange: setColumnVisibility,
     onColumnOrderChange: setColumnOrder,
 
@@ -86,6 +91,8 @@ export default function ProductTable({
     getSortedRowModel: getSortedRowModel(),
 
     getPaginationRowModel: getPaginationRowModel(),
+
+    autoResetPageIndex: false,
   });
 
   const moveColumn = (columnId: string, direction: "left" | "right") => {
@@ -309,3 +316,5 @@ export default function ProductTable({
     </div>
   );
 }
+
+export default memo(ProductTable);

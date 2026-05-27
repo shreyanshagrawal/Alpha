@@ -6,7 +6,12 @@ import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/shared/loading";
 import { useProduct } from "@/features/products/hooks/use-product";
-import ProductCarousel from "./product-carousel";
+import dynamic from "next/dynamic";
+
+const ProductCarousel = dynamic(() => import("./product-carousel"), {
+  loading: () => <div className="h-[400px] w-full animate-pulse bg-muted rounded-3xl" />,
+  ssr: false,
+});
 
 interface Props {
   id: string;

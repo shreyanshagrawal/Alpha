@@ -29,7 +29,13 @@ export default function ProductCarousel({
     setCurrent(api.selectedScrollSnap());
 
     api.on("select", () => {
-      setCurrent(api.selectedScrollSnap());
+      const selected = api.selectedScrollSnap();
+      setCurrent(selected);
+      // Smoothly scroll the active thumbnail into view
+      const thumb = document.getElementById(`thumb-${selected}`);
+      if (thumb) {
+        thumb.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      }
     });
   }, [api]);
 
@@ -46,6 +52,7 @@ export default function ProductCarousel({
                   alt={`${title} - Image ${index + 1}`}
                   width={800}
                   height={800}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   priority={index === 0}
                   className="h-[400px] w-full object-contain p-6 select-none pointer-events-none"
                 />
@@ -62,12 +69,14 @@ export default function ProductCarousel({
       </div>
 
       {/* Thumbnails */}
-      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
+      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin snap-x">
         {images.map((image, index) => (
           <button
             key={image}
+            id={`thumb-${index}`}
+            aria-label={`View image ${index + 1}`}
             onClick={() => api?.scrollTo(index)}
-            className={`flex-shrink-0 overflow-hidden rounded-xl border-2 transition-all duration-200 ${
+            className={`flex-shrink-0 snap-center overflow-hidden rounded-xl border-2 transition-all duration-200 ${
               current === index
                 ? "border-primary scale-[0.98] ring-1 ring-primary/20"
                 : "border-transparent hover:opacity-90"

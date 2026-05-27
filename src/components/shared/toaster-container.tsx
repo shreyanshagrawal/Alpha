@@ -5,10 +5,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X, CheckCircle2, AlertCircle, Sparkles } from "lucide-react";
 import { useEffect } from "react";
 
+// a component to show toasts
 function ToastItem({ toast }: { toast: Toast }) {
 
+  // storing the remove toast function in a variable
   const removeToast = useToastStore((state) => state.removeToast);
 
+  // making a use effect for if a toast appears to automatically remove it using set Timeout
   useEffect(() => {
     const timer = setTimeout(() => {
       removeToast(toast.id);
@@ -17,6 +20,7 @@ function ToastItem({ toast }: { toast: Toast }) {
     return () => clearTimeout(timer);
   }, [toast, removeToast]);
 
+  // sets icons for each type of toast
   const getIcon = () => {
     switch (toast.type) {
       case "success":
@@ -31,6 +35,7 @@ function ToastItem({ toast }: { toast: Toast }) {
     }
   };
 
+  //colors for each type of toast
   const getBorderColor = () => {
     switch (toast.type) {
       case "success":
@@ -45,6 +50,7 @@ function ToastItem({ toast }: { toast: Toast }) {
     }
   };
 
+    //using framer motion to create a div and used for animating the pop up style also setting the border color acccording to the type of popup
   return (
     <motion.div
       layout
@@ -65,6 +71,7 @@ function ToastItem({ toast }: { toast: Toast }) {
           </p>
         )}
       </div>
+      {/* calling the remove toast function from the custom hook*/}
       <button
         onClick={() => removeToast(toast.id)}
         className="absolute top-3.5 right-3.5 p-0.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
@@ -75,6 +82,7 @@ function ToastItem({ toast }: { toast: Toast }) {
   );
 }
 
+// a container to display the toasts in
 export default function ToasterContainer() {
   const toasts = useToastStore((state) => state.toasts);
 

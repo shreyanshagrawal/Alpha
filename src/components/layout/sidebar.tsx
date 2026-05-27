@@ -1,27 +1,38 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
-import { sidebarLinks } from "@/constants/sidebar";
+import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 
+import { sidebarLinks } from "@/constants/sidebar";
+import { useAuth } from "@/context/auth-context";
+
+// a side bar component
 export default function Sidebar({ className }: { className?: string }) {
+  // get active paths name
   const pathname = usePathname();
+  const { role } = useAuth();
 
   return (
     <div className={cn("flex h-full w-full flex-col bg-background p-4", className)}>
       {/* Logo */}
       <div className="mb-8 px-2">
         <h1 className="text-2xl font-bold tracking-tight">
-          AdminPanel
+          {role === "admin" ? "AdminPanel" : "Users Panel"}
         </h1>
       </div>
 
       {/* Navigation */}
       <nav className="flex flex-col gap-2">
+
+        {/* this is a list of elements that are to be displayed  */}
         {sidebarLinks.map((link) => {
+          // Hide analytics for non-admin users
+          if (link.title === "Analytics" && role !== "admin") return null;
+
+          // checking if the path is active
           const isActive = pathname === link.href;
 
           return (

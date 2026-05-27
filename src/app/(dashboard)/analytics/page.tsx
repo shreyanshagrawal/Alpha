@@ -10,7 +10,13 @@ import {
 
 import StatsCard from "@/features/analytics/components/stats-card";
 
-import CategoryChart from "@/features/analytics/components/category-chart";
+import dynamic from "next/dynamic";
+import ProtectedRoute from "@/components/auth/protected-route";
+
+const CategoryChart = dynamic(() => import("@/features/analytics/components/category-chart"), {
+  loading: () => <div className="h-96 w-full animate-pulse bg-muted rounded-xl" />,
+  ssr: false,
+});
 
 import { useProducts } from "@/features/products/hooks/use-products";
 import { Product } from "@/features/products/types/product";
@@ -103,53 +109,55 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold">
-          Analytics
-        </h1>
+    <ProtectedRoute allowedRoles={["admin"]}>
+      <div className="space-y-8">
+        {/* Header */}
+        <div>
+          <h1 className="text-3xl font-bold">
+            Analytics
+          </h1>
 
-        <p className="text-muted-foreground">
-          Product analytics overview.
-        </p>
+          <p className="text-muted-foreground">
+            Product analytics overview.
+          </p>
+        </div>
+
+        {/* Stats */}
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <StatsCard
+            title="Total Products"
+            value={
+              analytics.totalProducts
+            }
+            icon={
+              <Package className="h-8 w-8 text-muted-foreground" />
+            }
+          />
+
+          <StatsCard
+            title="Average Rating"
+            value={analytics.averageRating}
+            icon={
+              <Star className="h-8 w-8 text-muted-foreground" />
+            }
+          />
+
+          <StatsCard
+            title="Inventory Value"
+            value={`$${analytics.totalInventoryValue}`}
+            icon={
+              <DollarSign className="h-8 w-8 text-muted-foreground" />
+            }
+          />
+        </div>
+
+        {/* Charts */}
+        <div className="grid gap-6 xl:grid-cols-2">
+          <CategoryChart
+            data={analytics.categoryData}
+          />
+        </div>
       </div>
-
-      {/* Stats */}
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        <StatsCard
-          title="Total Products"
-          value={
-            analytics.totalProducts
-          }
-          icon={
-            <Package className="h-8 w-8 text-muted-foreground" />
-          }
-        />
-
-        <StatsCard
-          title="Average Rating"
-          value={analytics.averageRating}
-          icon={
-            <Star className="h-8 w-8 text-muted-foreground" />
-          }
-        />
-
-        <StatsCard
-          title="Inventory Value"
-          value={`$${analytics.totalInventoryValue}`}
-          icon={
-            <DollarSign className="h-8 w-8 text-muted-foreground" />
-          }
-        />
-      </div>
-
-      {/* Charts */}
-      <div className="grid gap-6 xl:grid-cols-2">
-        <CategoryChart
-          data={analytics.categoryData}
-        />
-      </div>
-    </div>
+    </ProtectedRoute>
   );
 }
